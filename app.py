@@ -128,7 +128,7 @@ if st.session_state.page == 'home':
     
     with col2:
         # Display heart image
-        st.image(heart_image_1, use_column_width=True)
+        st.image(heart_image_1, use_container_width=True)
 
 # RESULTS PAGE
 elif st.session_state.page == 'results':
@@ -228,8 +228,8 @@ elif st.session_state.page == 'diet':
     
     with col2:
         # Display a food image
-        st.image(food_images[0], use_column_width=True)
-        st.image(food_images[1], use_column_width=True)
+        st.image(food_images[0], use_container_width=True)
+        st.image(food_images[1], use_container_width=True)
     
     # Buttons for navigation
     col1, col2 = st.columns(2)
