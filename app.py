@@ -271,50 +271,42 @@ elif st.session_state.page == 'results':
     </div>
     """, unsafe_allow_html=True)
     
-    # Create a card for user information
+    # Create a card for user information with normal readable text
+    # First create the card container
     st.markdown(f"""
     <div class="card" style="{card_border}">
-        <div class="user-info">
-            <div class="user-icon">{st.session_state.user_data['name'][0].upper()}</div>
-            <div>
-                <div class="user-name">{st.session_state.user_data['name']}</div>
-                <div class="timestamp">Health Profile</div>
-            </div>
-        </div>
-        
-        <div style="padding: 10px; background-color: {background_color}; border-radius: 8px; margin-bottom: 15px;">
-            <div style="font-size: 1.3rem; font-weight: 500; margin-bottom: 10px;">
-                {emoji} {header_text}
-            </div>
-            <div style="font-size: 1rem; color: #333;">
-                Based on your provided health information, our prediction model has assessed your heart health status.
-            </div>
-        </div>
-        
-        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
-            <div style="flex: 1; min-width: 150px; background: #f8f9fa; padding: 10px; border-radius: 8px;">
-                <div style="font-weight: 500; color: #666;">Age</div>
-                <div style="font-size: 1.1rem;">{st.session_state.user_data['age']} years</div>
-            </div>
-            <div style="flex: 1; min-width: 150px; background: #f8f9fa; padding: 10px; border-radius: 8px;">
-                <div style="font-weight: 500; color: #666;">Gender</div>
-                <div style="font-size: 1.1rem;">{st.session_state.user_data['gender']}</div>
-            </div>
-            <div style="flex: 1; min-width: 150px; background: #f8f9fa; padding: 10px; border-radius: 8px;">
-                <div style="font-weight: 500; color: #666;">Blood Pressure</div>
-                <div style="font-size: 1.1rem;">{st.session_state.user_data['blood_pressure']} mmHg</div>
-            </div>
-            <div style="flex: 1; min-width: 150px; background: #f8f9fa; padding: 10px; border-radius: 8px;">
-                <div style="font-weight: 500; color: #666;">Cholesterol</div>
-                <div style="font-size: 1.1rem;">{st.session_state.user_data['cholesterol']} mg/dL</div>
-            </div>
-            <div style="flex: 1; min-width: 150px; background: #f8f9fa; padding: 10px; border-radius: 8px;">
-                <div style="font-weight: 500; color: #666;">Chest Pain Type</div>
-                <div style="font-size: 1.1rem;">Type {st.session_state.user_data['chest_pain_type']}</div>
-            </div>
-        </div>
+    """, unsafe_allow_html=True)
+    
+    # Add user profile header
+    st.subheader(f"{st.session_state.user_data['name']}'s Health Profile")
+    
+    # Add assessment result
+    st.markdown(f"""
+    <div style="padding: 15px; background-color: {background_color}; border-radius: 8px; margin: 15px 0;">
+        <span style="font-size: 1.3rem; font-weight: 500;">{emoji} {header_text}</span>
+        <p style="margin-top: 10px;">
+            Based on your provided health information, our assessment shows 
+            {'indicators of heart disease risk factors' if st.session_state.prediction else 'no significant indicators of heart disease'}.
+        </p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Display user information in a clean format
+    st.write("### Your Health Information")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write(f"**Age:** {st.session_state.user_data['age']} years")
+        st.write(f"**Gender:** {st.session_state.user_data['gender']}")
+        st.write(f"**Chest Pain Type:** Type {st.session_state.user_data['chest_pain_type']}")
+    
+    with col2:
+        st.write(f"**Blood Pressure:** {st.session_state.user_data['blood_pressure']} mmHg")
+        st.write(f"**Cholesterol:** {st.session_state.user_data['cholesterol']} mg/dL")
+    
+    # Close the card div
+    st.markdown("</div>", unsafe_allow_html=True)
     
     # Create action buttons in a social media style
     col1, col2, col3 = st.columns([1, 1, 1])
