@@ -20,29 +20,34 @@ def generate_report(user_data, prediction, diet_recommendations):
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
     
-    # Create custom styles
-    styles.add(ParagraphStyle(
-        name='Title',
-        parent=styles['Heading1'],
-        fontSize=20,
-        alignment=1,  # Center alignment
-        spaceAfter=20
-    ))
+    # Create custom styles - check if style exists first to avoid KeyError
+    custom_styles = {
+        'ReportTitle': ParagraphStyle(
+            name='ReportTitle',
+            parent=styles['Heading1'],
+            fontSize=20,
+            alignment=1,  # Center alignment
+            spaceAfter=20
+        ),
+        'ReportSection': ParagraphStyle(
+            name='ReportSection',
+            parent=styles['Heading2'],
+            fontSize=16,
+            spaceBefore=15,
+            spaceAfter=10
+        ),
+        'ReportNormal': ParagraphStyle(
+            name='ReportNormal',
+            parent=styles['Normal'],
+            fontSize=12,
+            spaceAfter=8
+        )
+    }
     
-    styles.add(ParagraphStyle(
-        name='Section',
-        parent=styles['Heading2'],
-        fontSize=16,
-        spaceBefore=15,
-        spaceAfter=10
-    ))
-    
-    styles.add(ParagraphStyle(
-        name='Normal',
-        parent=styles['Normal'],
-        fontSize=12,
-        spaceAfter=8
-    ))
+    # Add styles if they don't already exist
+    for style_name, style in custom_styles.items():
+        if style_name not in styles:
+            styles.add(style)
     
     styles.add(ParagraphStyle(
         name='ResultPositive',
@@ -74,10 +79,10 @@ def generate_report(user_data, prediction, diet_recommendations):
     content = []
     
     # Title
-    content.append(Paragraph("Heart Health Report", styles['Title']))
+    content.append(Paragraph("Heart Health Report", styles['ReportTitle']))
     
     # User Information Table
-    content.append(Paragraph("Personal Information", styles['Section']))
+    content.append(Paragraph("Personal Information", styles['ReportSection']))
     
     user_data_table = [
         ["Name", user_data['name']],
@@ -100,7 +105,7 @@ def generate_report(user_data, prediction, diet_recommendations):
     content.append(Spacer(1, 20))
     
     # Prediction Result
-    content.append(Paragraph("Assessment Result", styles['Section']))
+    content.append(Paragraph("Assessment Result", styles['ReportSection']))
     
     if prediction:
         result_text = "Based on the information provided, indicators suggest the presence of heart disease risk factors."
@@ -118,17 +123,25 @@ def generate_report(user_data, prediction, diet_recommendations):
     and should be used for informational purposes only. Please consult with a healthcare professional 
     for proper diagnosis and treatment advice.
     """
-    content.append(Paragraph(note_text, styles['Normal']))
+    content.append(Paragraph(note_text, styles['ReportNormal']))
     content.append(Spacer(1, 20))
     
     # Diet Recommendations
-    content.append(Paragraph("Dietary Recommendations", styles['Section']))
+    content.append(Paragraph("Dietary Recommendations", styles['ReportSection']))
     
     for section, items in diet_recommendations.items():
-        content.append(Paragraph(section, styles['Heading3']))
+        # Create a custom subsection style for diet section headings
+        subsection_style = ParagraphStyle(
+            name='SubSection',
+            parent=styles['Heading3'],
+            fontSize=14,
+            spaceBefore=10,
+            spaceAfter=6
+        )
+        content.append(Paragraph(section, subsection_style))
         
         for item in items:
-            content.append(Paragraph(f"• {item}", styles['Normal']))
+            content.append(Paragraph(f"• {item}", styles['ReportNormal']))
         
         content.append(Spacer(1, 10))
     
@@ -138,7 +151,7 @@ def generate_report(user_data, prediction, diet_recommendations):
     professional. Regular check-ups and a healthy lifestyle are essential for heart health maintenance.</i>
     """
     content.append(Spacer(1, 30))
-    content.append(Paragraph(footer_text, styles['Normal']))
+    content.append(Paragraph(footer_text, styles['ReportNormal']))
     
     # Build the PDF
     doc.build(content)
